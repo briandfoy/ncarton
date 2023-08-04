@@ -145,14 +145,20 @@ sub cmd_version {
 sub cmd_bundle {
     my($self, @args) = @_;
 
+    $self->parse_options(
+        \@args,
+        "verbose!"    => \my $verbose,
+    );
+
     my $env = NCarton::Environment->build;
     $env->snapshot->load;
 
     $self->print("Bundling modules using @{[$env->cpanfile]}\n");
 
     my $builder = NCarton::Builder->new(
-        mirror => $self->mirror,
+        mirror   => $self->mirror,
         cpanfile => $env->cpanfile,
+        verbose  => $verbose,
     );
     $builder->bundle($env->install_path, $env->vendor_cache, $env->snapshot);
 
@@ -179,6 +185,7 @@ sub cmd_install {
         "without=s"   => sub { push @without, split /,/, $_[1] },
         "deployment!" => \my $deployment,
         "cached!"     => \my $cached,
+        "verbose!"    => \my $verbose,
     );
 
     my $env = NCarton::Environment->build($cpanfile_path, $install_path);
@@ -189,10 +196,11 @@ sub cmd_install {
     }
 
     my $builder = NCarton::Builder->new(
-        cascade => 1,
-        mirror  => $self->mirror,
-        without => \@without,
+        cascade  => 1,
+        mirror   => $self->mirror,
+        without  => \@without,
         cpanfile => $env->cpanfile,
+        verbose  => $verbose,
     );
 
     # TODO: --without with no .lock won't fetch the groups, resulting in insufficient requirements
@@ -329,9 +337,13 @@ sub cmd_check {
 sub cmd_update {
     my($self, @args) = @_;
 
+    $self->parse_options(
+        \@args,
+        "verbose!"    => \my $verbose,
+    );
+
     my $env = NCarton::Environment->build;
     $env->cpanfile->load;
-
 
     my $cpanfile = Module::CPANfile->load($env->cpanfile);
     @args = grep { $_ ne 'perl' } $env->cpanfile->required_modules unless @args;
@@ -348,9 +360,10 @@ sub cmd_update {
 
     return unless @modules;
 
-    my $builder = NNCarton::Builder->new(
-        mirror => $self->mirror,
+    my $builder = NCarton::Builder->new(
+        mirror   => $self->mirror,
         cpanfile => $env->cpanfile,
+        verbose  => $verbose,
     );
     $builder->update($env->install_path, @modules);
 
