@@ -1,7 +1,7 @@
 use strict;
 use Test::More;
 use lib ".";
-use xt::CLI;
+use t::CLI;
 
 subtest 'snapshot file has canonical representation' => sub {
     my $app = cli();

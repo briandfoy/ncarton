@@ -1,4 +1,4 @@
-package xt::CLI;
+package t::CLI;
 use strict;
 use base qw(Exporter);
 our @EXPORT = qw(run cli);
@@ -6,19 +6,19 @@ our @EXPORT = qw(run cli);
 use Test::Requires qw( Capture::Tiny File::pushd );
 
 sub cli {
-    my $cli = Carton::CLI::Tested->new;
+    my $cli = NCarton::CLI::Tested->new;
     $cli->dir( Path::Tiny->tempdir(CLEANUP => !$ENV{NO_CLEANUP}) );
     warn "Temp directory: ", $cli->dir, "\n" if $ENV{NO_CLEANUP};
     $cli;
 }
 
-package Carton::CLI::Tested;
-use Carton::CLI;
+package NCarton::CLI::Tested;
+use NCarton::CLI;
 use Capture::Tiny qw(capture);
 use File::pushd ();
 use Path::Tiny;
 
-$Carton::CLI::UseSystem = 1;
+$NCarton::CLI::UseSystem = 1;
 
 use Class::Tiny qw( dir stdout stderr exit_code );
 
@@ -44,7 +44,7 @@ sub run {
     my $pushd = File::pushd::pushd $self->dir;
 
     my @capture = capture {
-        my $code = eval { Carton::CLI->new->run(@args) };
+        my $code = eval { NCarton::CLI->new->run(@args) };
         $self->exit_code($@ ? 255 : $code);
     };
 

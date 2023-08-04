@@ -1,7 +1,7 @@
 use strict;
 use Test::More;
 use lib ".";
-use xt::CLI;
+use t::CLI;
 
 subtest 'with pinned dist' => sub {
     my $app = cli();

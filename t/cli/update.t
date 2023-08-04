@@ -1,7 +1,7 @@
 use strict;
 use Test::More;
 use lib ".";
-use xt::CLI;
+use t::CLI;
 
 subtest 'carton update NonExistentModule' => sub {
     my $app = cli();
@@ -31,19 +31,25 @@ requires 'Try::Tiny', '>= 0.09, <= 0.12';
 EOF
 
     $app->run("install");
+    diag( $app->stdout );
     $app->run("check");
-    like $app->stdout, qr/are satisfied/;
+     diag( $app->stdout );
+   like $app->stdout, qr/are satisfied/;
 
     $app->run("list");
+    diag( $app->stdout );
     like $app->stdout, qr/Try-Tiny-0\.09/;
 
     $app->run("update", "Try::Tiny");
+    diag( $app->stdout );
     like $app->stdout, qr/installed Try-Tiny-0\.12.*upgraded from 0\.09/;
 
     $app->run("check");
+    diag( $app->stdout );
     like $app->stdout, qr/are satisfied/;
 
     $app->run("list");
+    diag( $app->stdout );
     like $app->stdout, qr/Try-Tiny-0\.12/;
 };
 

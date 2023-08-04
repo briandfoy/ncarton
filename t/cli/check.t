@@ -1,7 +1,7 @@
 use strict;
 use Test::More;
 use lib ".";
-use xt::CLI;
+use t::CLI;
 
 subtest 'carton check fails when there is no lock' => sub {
     my $app = cli();

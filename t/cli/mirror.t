@@ -1,7 +1,7 @@
 use strict;
 use Test::More;
 use lib ".";
-use xt::CLI;
+use t::CLI;
 
 my $cwd = Path::Tiny->cwd;
 
@@ -12,7 +12,7 @@ my $cwd = Path::Tiny->cwd;
 requires 'Hash::MultiValue';
 EOF
 
-    local $ENV{PERL_CARTON_MIRROR} = "$cwd/xt/mirror";
+    local $ENV{PERL_CARTON_MIRROR} = "$cwd/t/mirror";
     $app->run("install");
 
     $app->run("list");
@@ -26,7 +26,7 @@ EOF
 requires 'PSGI';
 EOF
 
-    local $ENV{PERL_CARTON_MIRROR} = "$cwd/xt/mirror";
+    local $ENV{PERL_CARTON_MIRROR} = "$cwd/t/mirror";
     $app->run("install");
 
     $app->run("list");
