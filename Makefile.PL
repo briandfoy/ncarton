@@ -52,7 +52,7 @@ my %WriteMakefile = (
 	'LICENSE'       => 'perl',
 	'AUTHOR'        => 'Tatsuhiko Miyagawa',
 
-	'EXE_FILES' => [ 'script/cartone' ],
+	'EXE_FILES' => [ 'script/ncarton' ],
 
 	'CONFIGURE_REQUIRES' => {
 		"CPAN::Meta"               => "2.120921",

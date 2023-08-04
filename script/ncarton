@@ -1,0 +1,27 @@
+#!perl
+use strict;
+use 5.008001;
+use NCarton::CLI;
+
+exit NCarton::CLI->new->run(@ARGV);
+
+__END__
+
+=head1 NAME
+
+ncarton - Perl module dependency manager
+
+=head1 SYNOPSIS
+
+  > ncarton install
+  > ncarton exec ./myscript
+
+=head1 DESCRIPTION
+
+For more documentation, refer to L<NCarton> by running C<perldoc NCarton> or C<ncarton --help>.
+
+=head1 SEE ALSO
+
+L<Carton>
+
+=cut
