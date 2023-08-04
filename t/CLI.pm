@@ -45,6 +45,7 @@ sub run {
 
     my @capture = capture {
         my $code = eval { NCarton::CLI->new->run(@args) };
+        print STDERR "EVAL failed for args <@args>: $@" if length $@;
         $self->exit_code($@ ? 255 : $code);
     };
 
