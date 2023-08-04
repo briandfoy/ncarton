@@ -8,3 +8,16 @@ cpanfile.snapshot
 /.build
 /vendor
 /blib
+.DS_Store
+Makefile
+*.bak
+*.old
+blib
+pm_to_blib
+*.icloud
+
+cooker_report.txt
+
+MANIFEST*[123456789]
+Changes*[123456789]
+
