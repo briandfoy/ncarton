@@ -6,7 +6,7 @@ use Class::Tiny {
     cascade => sub { 1 },
     without => sub { [] },
     cpanfile => undef,
-    verbose => 1,
+    verbose => 0,
 };
 
 sub effective_mirrors {
@@ -81,9 +81,8 @@ sub install {
         "--cpanfile", $self->cpanfile,
         "--installdeps", $self->cpanfile->dirname,
         "--notest",
-        ( $self->verbose ? '--verbose' : '-quiet' ),
+        ( $self->verbose ? '--verbose' : '--quiet' ),
 	);
-	print STDERR ( "--Command is--\n@command\n---\n" ) if $self->verbose;
     $self->run_install(@command) or die "Installing modules failed\n";
 }
 
@@ -112,7 +111,6 @@ sub update {
         ( $self->verbose ? '--verbose' : '-quiet' ),
         @modules
 	);
-	print STDERR ( "--Command is--\n@command\n---\n" ) if $self->verbose;
     $self->run_install(@command) or die "Updating modules failed\n";
 }
 
