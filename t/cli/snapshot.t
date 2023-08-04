@@ -59,7 +59,13 @@ EOF
     $app->write_file('cpanfile.snapshot', $content);
 
     $app->run("install");
-    ok !$app->stderr;
+	is $app->exit_code, 0, 'install exits successfully';
+
+	# Menlo has several uninitialized value warnings
+	my @warnings =
+		grep { ! m|Compat\.pm line \d+\.$| }
+		split /\r?\n/, $app->stderr;
+	is scalar @warnings, 0, 'there are no warnings';
 };
 
 done_testing;
