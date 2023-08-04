@@ -14,15 +14,15 @@ changes between versions. See C<Changes> file for more details.
 
 =item *
 
-C<cartone exec -Ilib> is deprecated. You must pass the optional include
+C<carton exec -Ilib> is deprecated. You must pass the optional include
 path to perl interpreter in the normal way, like:
 
-  cartone exec perl -Ilib myscript
+  carton exec perl -Ilib myscript
 
 Or make your script to take its own C<-I> option, like many command line
 launcher does (i.e. plackup, prove)
 
-  cartone exec plackup -Ilib myapp.psgi
+  carton exec plackup -Ilib myapp.psgi
 
 =item *
 

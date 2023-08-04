@@ -36,7 +36,7 @@ use parent 'NCarton::Error';
 sub path { $_[0]->{path} }
 
 package NCarton::Error::SnapshotNotFound;
-use parent 'Carton::Error';
+use parent 'NCarton::Error';
 sub path { $_[0]->{path} }
 
 1;

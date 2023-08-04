@@ -37,7 +37,7 @@ sub dependency_for {
 
     my $requirement = $reqs->requirements_for_module($module);
 
-    my $dep = Carton::Dependency->new;
+    my $dep = NCarton::Dependency->new;
     $dep->module($module);
     $dep->requirement($requirement);
 
@@ -56,7 +56,7 @@ sub merged_requirements {
     my %seen;
     $self->walk_down(sub {
         my($dependency, $reqs, $level) = @_;
-        return Carton::Tree::STOP if $dependency && $seen{$dependency->distname}++;
+        return NCarton::Tree::STOP if $dependency && $seen{$dependency->distname}++;
         $merged_reqs->add_requirements($reqs);
     });
 

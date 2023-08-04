@@ -22,7 +22,7 @@ our $UseSystem = 0; # 1 for unit testing
 
 use Class::Tiny {
     verbose => undef,
-    cartone => sub { $_[0]->_build_cartone },
+    carton => sub { $_[0]->_build_carton },
     mirror => sub { $_[0]->_build_mirror },
 };
 
@@ -83,12 +83,12 @@ sub commands {
 sub cmd_usage {
     my $self = shift;
     $self->print(<<HELP);
-Usage: cartone <command>
+Usage: carton <command>
 
 where <command> is one of:
   @{[ join ", ", $self->commands ]}
 
-Run cartone -h <command> for help.
+Run carton -h <command> for help.
 HELP
 }
 
@@ -139,7 +139,7 @@ sub cmd_help {
 
 sub cmd_version {
     my $self = shift;
-    $self->print("cartone $NCarton::VERSION\n");
+    $self->print("carton $NCarton::VERSION\n");
 }
 
 sub cmd_bundle {
@@ -164,7 +164,7 @@ sub cmd_fatpack {
 
     my $env = NCarton::Environment->build;
     require NCarton::Packer;
-    NCarton::Packer->new->fatpack_cartone($env->vendor_bin);
+    NCarton::Packer->new->fatpack_carton($env->vendor_bin);
 }
 
 sub cmd_install {
@@ -185,7 +185,7 @@ sub cmd_install {
     $env->snapshot->load_if_exists;
 
     if ($deployment && !$env->snapshot->loaded) {
-        $self->error("--deployment requires cpanfile.snapshot: Run `cartone install` and make sure cpanfile.snapshot is checked into your version control.\n");
+        $self->error("--deployment requires cpanfile.snapshot: Run `carton install` and make sure cpanfile.snapshot is checked into your version control.\n");
     }
 
     my $builder = NCarton::Builder->new(
@@ -319,7 +319,7 @@ sub cmd_check {
                               $module, $merged_reqs->requirements_for_module($module), INFO);
             }
         }
-        $self->printf("Run `cartone install` to install them.\n", INFO);
+        $self->printf("Run `carton install` to install them.\n", INFO);
         NCarton::Error::CommandExit->throw;
     } else {
         $self->print("cpanfile's dependencies are satisfied.\n", INFO);
@@ -376,7 +376,7 @@ sub cmd_exec {
 
     while (@args) {
         if ($args[0] eq '-I') {
-            warn "exec -Ilib is deprecated. You might want to run: cartone exec perl -Ilib ...\n";
+            warn "exec -Ilib is deprecated. You might want to run: carton exec perl -Ilib ...\n";
             splice(@args, 0, 2);
         } else {
             last;
@@ -386,7 +386,7 @@ sub cmd_exec {
     $self->parse_options_pass_through(\@args); # to handle --
 
     unless (@args) {
-        $self->error("cartone exec needs a command to run.\n");
+        $self->error("carton exec needs a command to run.\n");
     }
 
     # PERL5LIB takes care of arch
