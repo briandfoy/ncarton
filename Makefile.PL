@@ -54,7 +54,8 @@ my %WriteMakefile = (
 
 	'EXE_FILES' => [ 'script/ncarton' ],
 
-	'CONFIGURE_REQUIRES' => {
+	'PREREQ_PM' => {
+		'Carp' => '0',
 		"CPAN::Meta"               => "2.120921",
 		"CPAN::Meta::Requirements" => "2.121",
 		"Class::Tiny"              => "1.001",
@@ -73,11 +74,11 @@ my %WriteMakefile = (
 		},
 
 	'TEST_REQUIRES' => {
-		'Test::More' => '1',
-		},
-
-	'PREREQ_PM' => {
-		'Carp' => '0',
+		'Capture::Tiny'  => '0',
+		'File::pushd'    => '0',
+		'Test::More'     => '1',
+		'Test::Requires' => '0',
+		"Path::Tiny"     => "0.033",
 		},
 
 	'META_MERGE' => {
@@ -116,7 +117,6 @@ sub do_it {
 
 	WriteMakefile( %$arguments );
 	}
-
 
 no warnings;
 __PACKAGE__;
