@@ -1,6 +1,6 @@
 package t::CLI;
 use strict;
-use base qw(Exporter);
+use Exporter qw(import);
 our @EXPORT = qw(run cli);
 
 use Test::Requires qw( Capture::Tiny File::pushd );
