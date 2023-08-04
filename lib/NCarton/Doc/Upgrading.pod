@@ -1,0 +1,32 @@
+=head1 NAME
+
+NCarton::Doc::Upgrading - Upgrading document
+
+=head1 UPGRADING
+
+NCarton adds, changes and deprecates some features between major
+releases in backward incompatible ways. Here's the list of major
+changes between versions. See C<Changes> file for more details.
+
+=head2 v0.9 to v1.0
+
+=over 4
+
+=item *
+
+C<cartone exec -Ilib> is deprecated. You must pass the optional include
+path to perl interpreter in the normal way, like:
+
+  cartone exec perl -Ilib myscript
+
+Or make your script to take its own C<-I> option, like many command line
+launcher does (i.e. plackup, prove)
+
+  cartone exec plackup -Ilib myapp.psgi
+
+=item *
+
+cpanfile is now a requirement, and extracting requirements from build
+files (C<Makefile.PL>, C<Build.PL>) is not supported.
+
+=back
