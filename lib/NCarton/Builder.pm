@@ -6,6 +6,7 @@ use Class::Tiny {
     cascade => sub { 1 },
     without => sub { [] },
     cpanfile => undef,
+    verbose => 1,
 };
 
 sub effective_mirrors {
@@ -69,7 +70,7 @@ sub bundle {
 sub install {
     my($self, $path) = @_;
 
-    $self->run_install(
+	my @command = (
         "-L", $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
         ( $self->index ? ("--mirror-index", $self->index) : () ),
@@ -79,7 +80,11 @@ sub install {
         $self->groups,
         "--cpanfile", $self->cpanfile,
         "--installdeps", $self->cpanfile->dirname,
-    ) or die "Installing modules failed\n";
+        "--notest",
+        ( $self->verbose ? '--verbose' : '-quiet' ),
+	);
+	print STDERR ( "--Command is--\n@command\n---\n" ) if $self->verbose;
+    $self->run_install(@command) or die "Installing modules failed\n";
 }
 
 sub groups {
@@ -99,13 +104,16 @@ sub groups {
 sub update {
     my($self, $path, @modules) = @_;
 
-    $self->run_install(
+	my @command = (
         "-L", $path,
         (map { ("--mirror", $_->url) } $self->effective_mirrors),
         ( $self->custom_mirror ? "--mirror-only" : () ),
         "--save-dists", "$path/cache",
+        ( $self->verbose ? '--verbose' : '-quiet' ),
         @modules
-    ) or die "Updating modules failed\n";
+	);
+	print STDERR ( "--Command is--\n@command\n---\n" ) if $self->verbose;
+    $self->run_install(@command) or die "Updating modules failed\n";
 }
 
 sub run_install {
@@ -115,7 +123,7 @@ sub run_install {
     local $ENV{PERL_CPANM_OPT};
 
     my $cli = Menlo::CLI::Compat->new;
-    $cli->parse_options("--quiet", "--notest", @args);
+    $cli->parse_options(@args);
     $cli->run;
 
     !$cli->status;
