@@ -1,9 +1,9 @@
-# brian's standard GitHub Actions Ubuntu config for Perl 5 modules
-# version 20230718.001
+# brian's standard GitHub Actions Windows config for Perl 5 modules
+# version 20220902.001
 # https://github.com/briandfoy/github_workflows
 # https://github.com/features/actions
 # This file is licensed under the Artistic License 2.0
-name: ubuntu
+name: windows
 
 on:
     push:
@@ -11,10 +11,10 @@ on:
             - '**'
             - '!**appveyor**'
             - '!**circleci**'
+            - '!**linux**'
             - '!**macos**'
             - '!**notest**'
             - '!**release**'
-            - '!**windows**'
         tags-ignore:
             # I tag release pushes but those should have already been tested
             - 'release-*'
@@ -24,9 +24,9 @@ on:
             - '.appveyor.yml'
             - '.circleci'
             - '.gitattributes'
+            - '.github/workflows/linux.yml'
             - '.github/workflows/macos.yml'
             - '.github/workflows/release.yml'
-            - '.github/workflows/windows.yml'
             - '.gitignore'
             - '.releaserc'
             - 'Changes'
@@ -37,61 +37,30 @@ on:
 jobs:
     perl:
         runs-on: ${{ matrix.os }}
+        # store any secrets in an environment named "testing"
         strategy:
           matrix:
             os:
-                - ubuntu-22.04
-            perl-version:
-                - '5.8'
-                - '5.10'
-                - '5.12'
-                - '5.14'
-                - '5.16'
-                - '5.18'
-                - '5.20'
-                - '5.22'
-                - '5.24'
-                - '5.26'
-                - '5.28'
-                - '5.30'
-                - '5.32'
-                - '5.34'
-                - '5.36'
-                - 'latest'
-        container:
-            image: perl:${{ matrix.perl-version }}
+                - windows-2019
+                - windows-2022
         steps:
+            - run: git config --global core.autocrlf false
             - uses: actions/checkout@v3
-            - name: Platform check
-              run: uname -a
-            - name: Perl version check
+            - name: Set up Perl
               run: |
-                perl -V
-                perl -v | perl -0777 -ne 'm/(v5\.\d+)/ && print "PERL_VERSION=$1"' >> $GITHUB_ENV
-# Some older versions of Perl have trouble with hostnames in certs. I
-# haven't figured out why.
-            - name: Setup environment
-              run: |
-                echo "PERL_LWP_SSL_VERIFY_HOSTNAME=0" >> $GITHUB_ENV
-# I had some problems with openssl on Ubuntu, so I punted by installing
-# cpanm first, which is easy. I can install IO::Socket::SSL with that,
-# then switch back to cpan. I didn't explore this further, but what you
-# see here hasn't caused problems for me.
-# Need HTTP::Tiny 0.055 or later.
-            - name: Install cpanm and multiple modules
-              run: |
-                curl -L https://cpanmin.us | perl - App::cpanminus
-                cpanm --notest IO::Socket::SSL App::Cpan HTTP::Tiny ExtUtils::MakeMaker Test::Manifest Test::More
+                choco install strawberryperl
+                echo "C:\strawberry\c\bin"         | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+                echo "C:\strawberry\perl\site\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+                echo "C:\strawberry\perl\bin"      | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+            - name: Perl version
+              run: perl -V
 # Install the dependencies, again not testing them. This installs the
 # module in the current directory, so we end up installing the module,
 # but that's not a big deal.
             - name: Install dependencies
               run: |
-                cpanm --notest --installdeps --with-suggests --with-recommends .
-            - name: Show cpanm failures
-              if:  ${{ failure() }}
-              run: |
-                cat /home/runner/.cpanm/work/*/build.log
+                cpan -M https://www.cpan.org -T .
+                cpan -M https://www.cpan.org -T Test::Manifest
             - name: Run tests
               run: |
                 perl Makefile.PL
@@ -100,7 +69,7 @@ jobs:
             - name: Author tests
               if: hashFiles('xt') != ''
               run: |
-                cpanm --notest Test::CPAN::Changes
+                cpan -M https://www.cpan.org -T Test::CPAN::Changes
                 prove -r -b xt
 # Running tests in parallel should be faster, but it's also more
 # tricky in cases where different tests share a feature, such as a
@@ -108,9 +77,11 @@ jobs:
 # Test in parallel to catch that, because other people will test your
 # stuff in parallel.
             - name: Run tests in parallel
+              env:
+                HARNESS_OPTIONS: j10
               run: |
                 perl Makefile.PL
-                HARNESS_OPTIONS=j10 make test
+                make test
 # The disttest target creates the distribution, unwraps it, changes
 # into the dist dir, then runs the tests there. That checks that
 # everything that should be in the dist is in the dist. If you forget
@@ -121,14 +92,11 @@ jobs:
                 perl Makefile.PL
                 make disttest
                 make clean
-# And, coverage reports, but only under 5.12 and later since modern
-# Devel::Cover instances don't work with earlier versions as of
-# Devel::Cover 1.39
+# And, coverage reports
             - name: Run coverage tests
-              if: env.PERL_VERSION != 'v5.8' && env.PERL_VERSION != 'v5.10'
               env:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
-                cpanm --notest Devel::Cover Devel::Cover::Report::Coveralls
+                cpan -M https://www.cpan.org -T Devel::Cover Devel::Cover::Report::Coveralls
                 perl Makefile.PL
                 cover -test -report coveralls
