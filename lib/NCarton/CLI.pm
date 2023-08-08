@@ -180,12 +180,14 @@ sub cmd_install {
 
     $self->parse_options(
         \@args,
-        "p|path=s"    => \$install_path,
-        "cpanfile=s"  => \$cpanfile_path,
-        "without=s"   => sub { push @without, split /,/, $_[1] },
-        "deployment!" => \my $deployment,
-        "cached!"     => \my $cached,
-        "verbose!"    => \my $verbose,
+        "p|path=s"       => \$install_path,
+        "cpanfile=s"     => \$cpanfile_path,
+        "without=s"      => sub { push @without, split /,/, $_[1] },
+        "deployment!"    => \my $deployment,
+        "cached!"        => \my $cached,
+        "verbose!"       => \my $verbose,
+        "push-url=s@"    => \my $push_urls,
+        "unshift-url=s@" => \my $unshift_urls,
     );
 
     my $env = NCarton::Environment->build($cpanfile_path, $install_path);

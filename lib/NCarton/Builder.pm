@@ -1,12 +1,14 @@
 package NCarton::Builder;
 use strict;
 use Class::Tiny {
-    mirror => undef,
-    index  => undef,
-    cascade => sub { 1 },
-    without => sub { [] },
-    cpanfile => undef,
-    verbose => 0,
+    cascade     => sub { 1 },
+    cpanfile    => undef,
+    index       => undef,
+    mirror      => undef,
+    push_url    => sub { [] }
+    unshift_url => sub { [] }
+    verbose     => sub { 0 },
+    without     => sub { [] },
 };
 
 sub effective_mirrors {
