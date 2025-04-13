@@ -76,9 +76,10 @@ my %WriteMakefile = (
 	'TEST_REQUIRES' => {
 		'Capture::Tiny'  => '0',
 		'File::pushd'    => '0',
+		"Path::Tiny"     => "0.033",
 		'Test::More'     => '1',
 		'Test::Requires' => '0',
-		"Path::Tiny"     => "0.033",
+		'version'        => '0.86',
 		},
 
 	'META_MERGE' => {
